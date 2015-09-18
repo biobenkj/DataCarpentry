@@ -1,0 +1,64 @@
+SQLite challenge solutions:
+
+Challenge 1: Write a query that returns The year, month, day, species_id and weight in mg
+
+    SELECT year, month, day, species_id, (weight * 1000) FROM surveys;
+    
+Challenge 2: Write a query that returns the day, month, year, species_id, and weight 
+(in kg) for individuals caught on Plot 1 that weigh more than 75 g
+
+    SELECT day, month, year, species_id, (weight/1000.0) FROM surveys WHERE plot_id = 1 AND weight >= 75;
+    
+Challenge 3: Write a query that returns year, species, and weight in kg from the surveys 
+table, sorted with the largest weights at the top.
+
+    SELECT year, species_id, (weight/1000.0) FROM surveys ORDER BY weight DESC;
+    
+Challenge 4: Let's try to combine what we've learned so far in a single query. Using the 
+surveys table write a query to display the three date fields, species_id, and weight in 
+kilograms (rounded to two decimal places), for individuals captured in 1999, ordered 
+alphabetically by the species_id.
+
+    SELECT month, day, year, species_id, ROUND(weight/1000.0, 2) FROM surveys WHERE year=1999 ORDER BY species_id ASC;
+    
+Challenge 5: Write query that returns: total weight, average weight, and the min and max 
+weights for all animals caught over the duration of the survey. Can you modify it so that 
+it outputs that for a range of weights?
+
+    SELECT SUM(weight), SUM(weight)/COUNT(*), MIN(weight), MAX(weight) FROM surveys
+    SELECT SUM(weight), SUM(weight)/COUNT(*), MIN(weight), MAX(weight) FROM surveys WHERE weight >= 100 AND weight <= 200;
+    
+    Bonus:
+    SELECT species_id, SUM(weight), SUM(weight)/COUNT(*), MIN(weight), MAX(weight) FROM surveys GROUP BY species_id ORDER BY weight DESC;
+    
+Challenge 6: Write queries that return:
+
+    1. How many individuals were counted in each year. a) in total; b) per each species.
+    
+        SELECT year, COUNT(*) FROM surveys GROUP BY year ORDER BY COUNT(*) DESC;
+        SELECT species_id, year, COUNT(*) FROM surveys GROUP BY year, species_id;
+        
+    2. Average weight of each species in each year. Can you modify the above queries combining them into one?
+    
+        SELECT species_id, year, SUM(weight)/COUNT(*) FROM surveys GROUP BY year, species_id;
+        
+Challenge 7: Write a query that returns the number of each species caught in each year 
+sorted from most often caught species to the least occurring ones within each year 
+starting from the most recent records.
+
+    SELECT species_id, year, COUNT(*) FROM surveys GROUP BY year, species_id ORDER BY year DESC, COUNT(*) DESC;
+    
+Challenge 8: Write a query that returns the genus, the species, and the weight of every 
+individual captured at the site
+
+    SELECT species.genus, species.species, surveys.weight FROM surveys JOIN species ON surveys.species_id = species.species_id;
+    
+Challenge 9: Write a query that returns the number of genus of the animals caught in each 
+plot in descending order.
+
+	SELECT species.genus, COUNT(species.genus), surveys.plot_id 
+	FROM surveys 
+	JOIN species 
+	ON surveys.species_id = species.species_id 
+	GROUP BY plot_id 
+	ORDER BY COUNT(species.genus) DESC;
