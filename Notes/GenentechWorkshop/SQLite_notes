@@ -60,5 +60,5 @@ plot in descending order.
 	FROM surveys 
 	JOIN species 
 	ON surveys.species_id = species.species_id 
-	GROUP BY plot_id 
+	GROUP BY surveys.plot_id, species.genus  
 	ORDER BY COUNT(species.genus) DESC;
